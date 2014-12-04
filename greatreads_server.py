@@ -156,5 +156,14 @@ def get_search_results():
                            categories=categories)
 
 
+@app.route('/users/<uid>/friend_activity')
+def get_frnd_actvty(uid):
+    with easypg.cursor() as cur:
+        user_id = queries.get_user_id(cur, uid)
+        activity_info = activity.get_friend_activity(cur, user_id)
+    return render_template('activity_list.html',
+                           activity_info = activity_info,
+                           uid = uid)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
