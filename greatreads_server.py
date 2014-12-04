@@ -3,7 +3,7 @@ from os import abort
 __author__ = 'RR1'
 
 from flask import Flask, render_template, redirect, url_for, request, session, flash, escape
-from data import queries, follows, reviews
+from data import queries, follows, reviews, activity
 from data import queries
 from flask import render_template
 from data import user_lists
@@ -310,6 +310,15 @@ def unlk_review(uid, review_id):
             unlike_review = f.getlist(key)[0]
         reviews.unlike_review(cur, review_id, session['user_id'])
     return redirect('/reviews/' + uid + '/' + review_id)
+
+@app.route('/users/<uid>/friend_activity')
+def get_frnd_actvty(uid):
+    with easypg.cursor() as cur:
+        user_id = queries.get_user_id(cur, uid)
+        activity_info = activity.get_friend_activity(cur, user_id)
+    return render_template('activity_list.html',
+                           activity_info = activity_info,
+                           uid = uid)
 
 @app.route('/authors/<id>', methods=['POST', 'GET'])
 def
